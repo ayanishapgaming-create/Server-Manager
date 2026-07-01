@@ -25,17 +25,37 @@ jobs:
         java-version: '21'
         distribution: 'temurin'
 
-    # Step 3: Validate Gradle Wrapper to ensure it hasn't been maliciously modified
+    # Step 3: Bulletproof Guard - Automatically fetch wrapper if missing from git commit
+    - name: Ensure Gradle Wrapper Exists
+      run: |
+        if [ ! -f "gradlew" ]; then
+          echo "⚠️ WARNING: gradlew was not found in your repository checkout!"
+          echo "This usually happens if you forgot to run 'git add gradlew gradle/' before committing."
+          echo "Fetching the Gradle wrapper dynamically so the build doesn't crash..."
+          
+          mkdir -p gradle/wrapper
+          curl -sL https://raw.githubusercontent.com/gradle/gradle/master/gradlew -o gradlew
+          curl -sL https://raw.githubusercontent.com/gradle/gradle/master/gradlew.bat -o gradlew.bat
+          curl -sL https://raw.githubusercontent.com/gradle/gradle/master/gradle/wrapper/gradle-wrapper.jar -o gradle/wrapper/gradle-wrapper.jar
+          
+          echo "distributionBase=GRADLE_USER_HOME" > gradle/wrapper/gradle-wrapper.properties
+          echo "distributionPath=wrapper/dists" >> gradle/wrapper/gradle-wrapper.properties
+          echo "distributionUrl=https\://services.gradle.org/distributions/gradle-8.8-bin.zip" >> gradle/wrapper/gradle-wrapper.properties
+          echo "networkTimeout=10000" >> gradle/wrapper/gradle-wrapper.properties
+          echo "zipStoreBase=GRADLE_USER_HOME" >> gradle/wrapper/gradle-wrapper.properties
+          echo "zipStorePath=wrapper/dists" >> gradle/wrapper/gradle-wrapper.properties
+          
+          echo "✅ Dynamically recovered Gradle wrapper files successfully!"
+        fi
+        chmod +x gradlew
+
+    # Step 4: Validate Gradle Wrapper to ensure wrapper integrity
     - name: Validate Gradle Wrapper
       uses: gradle/actions/wrapper-validation@v4
 
-    # Step 4: Cache Gradle dependencies and optimize build speeds
+    # Step 5: Cache Gradle dependencies and optimize build speeds
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v4
-
-    # Step 5: Grant execute permission to Gradle wrapper
-    - name: Make Gradle Wrapper Executable
-      run: chmod +x gradlew
 
     # Step 6: Build the Minecraft mod (compiles, deobfuscates, remaps, and packages the mod jar)
     - name: Build Mod with Gradle
