@@ -65,13 +65,6 @@ public abstract class MultiplayerScreenMixin extends Screen {
         }
     }
 
-    @Inject(method = "tick", at = @At("TAIL"))
-    private void onTick(CallbackInfo ci) {
-        if (this.searchField != null) {
-            this.searchField.tick();
-        }
-    }
-
     @Inject(method = "removed", at = @At("TAIL"))
     private void onRemoved(CallbackInfo ci) {
         // Reset query on screen exit to avoid leakages

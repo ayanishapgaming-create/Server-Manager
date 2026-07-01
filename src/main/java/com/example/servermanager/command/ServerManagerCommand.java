@@ -73,7 +73,7 @@ public class ServerManagerCommand {
         source.sendFeedback(() -> TextUtil.format("&eMaintenance Mode: " + (config.maintenanceMode ? "&c&lENABLED" : "&a&lDISABLED")), false);
         source.sendFeedback(() -> TextUtil.format("&ePlayers Online: &a" + playersOnline + "&7 / &a" + maxPlayers), false);
         source.sendFeedback(() -> TextUtil.format("&eMemory Usage: &a" + usedMemory + "MB&7 / &a" + totalMemory + "MB &7(Max: &a" + maxMemory + "MB)"), false);
-        source.sendFeedback(() -> TextUtil.format("&eServer Version: &aMinecraft " + server.getServerVersion()), false);
+        source.sendFeedback(() -> TextUtil.format("&eServer Version: &aMinecraft " + server.getVersion()), false);
         source.sendFeedback(() -> TextUtil.format("&7=================================================="), false);
 
         return 1;

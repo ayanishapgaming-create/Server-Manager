@@ -133,7 +133,7 @@ public abstract class ServerEntryMixin {
                 );
 
                 // Force-reloads the server list widget to apply new pinned order sorting immediately
-                this.screen.serverListWidget.setServers(this.screen.getServerList());
+                ((MultiplayerScreenAccessor) this.screen).getServerListWidget().setServers(this.screen.getServerList());
 
                 cir.setReturnValue(true);
             }
